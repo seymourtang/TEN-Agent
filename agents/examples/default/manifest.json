@@ -35,11 +35,6 @@
     },
     {
       "type": "extension",
-      "name": "openai_v2v_python",
-      "version": "=0.1.0"
-    },
-    {
-      "type": "extension",
       "name": "message_collector",
       "version": "=0.1.0"
     },
@@ -80,37 +75,12 @@
     },
     {
       "type": "extension",
-      "name": "vision_analyze_tool_python",
-      "version": "=0.1.0"
-    },
-    {
-      "type": "extension",
       "name": "transcribe_asr_python",
       "version": "=0.1.0"
     },
     {
       "type": "extension",
-      "name": "gemini_llm_python",
-      "version": "=0.1.0"
-    },
-    {
-      "type": "extension",
-      "name": "bedrock_llm_python",
-      "version": "=0.1.0"
-    },
-    {
-      "type": "extension",
       "name": "polly_tts",
-      "version": "=0.1.0"
-    },
-    {
-      "type": "extension",
-      "name": "minimax_tts_python",
-      "version": "=0.1.0"
-    },
-    {
-      "type": "extension",
-      "name": "minimax_v2v_python",
       "version": "=0.1.0"
     },
     {
@@ -125,17 +95,17 @@
     },
     {
       "type": "extension",
-      "name": "dify_python",
-      "version": "=0.1.0"
-    },
-    {
-      "type": "extension",
       "name": "gemini_v2v_python",
       "version": "=0.1.0"
     },
     {
       "type": "extension",
-      "name": "coze_python_async",
+      "name": "tencent_asr_python",
+      "version": "=0.1.0"
+    },
+    {
+      "type": "extension",
+      "name": "tencent_tts_python",
       "version": "=0.1.0"
     }
   ]
