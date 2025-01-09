@@ -9,17 +9,6 @@
       "version": "0.6"
     }
   ],
-  "package": {
-    "include": [
-      "manifest.json",
-      "property.json",
-      "BUILD.gn",
-      "**.tent",
-      "**.py",
-      "README.md",
-      "tests/**"
-    ]
-  },
   "api": {
     "property": {
       "app_id": {
@@ -31,36 +20,44 @@
       "secret_key": {
         "type": "string"
       },
-      "voice_type":{
-        "type":"string"
-      },
-      "sample_rate": {
+      "engine_model_type":{
         "type": "string"
-      }
+     }
     },
-    "data_in": [
+    "audio_frame_in": [
       {
-        "name": "text_data",
-        "property": {
-          "text": {
-            "type": "string"
-          }
-        }
+        "name": "pcm_frame",
+        "property": {}
       }
     ],
     "cmd_in": [
-      {
-        "name": "flush"
-      }
     ],
-    "cmd_out": [
+    "data_out": [
       {
-        "name": "flush"
-      }
-    ],
-    "audio_frame_out": [
-      {
-        "name": "pcm_frame"
+        "name": "text_data",
+        "property": {
+          "time": {
+            "type": "int64"
+          },
+          "duration_ms": {
+            "type": "int64"
+          },
+          "language": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "is_final": {
+            "type": "bool"
+          },
+          "stream_id": {
+            "type": "uint32"
+          },
+          "end_of_segment": {
+            "type": "bool"
+          }
+        }
       }
     ]
   }

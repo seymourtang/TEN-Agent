@@ -44,12 +44,15 @@ class AsyncIteratorCallback(ResultCallback):
         self.ten_env.log_debug(f"received event: {message}")
 
     def on_data(self, data: bytes) -> None:
+        if not data:
+            self.ten_env.log_warn("Received empty audio bytes")
+            return
+        self.ten_env.log_info(f"Received pcm data: {len(data)} bytes")
         if self.closed:
             self.ten_env.log_warn(
                 f"received data: {len(data)} bytes but connection was closed"
             )
             return
-        self.ten_env.log_debug(f"received data: {len(data)} bytes")
         asyncio.run_coroutine_threadsafe(self.queue.put(data), self.loop)
 
 
