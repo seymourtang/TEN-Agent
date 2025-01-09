@@ -811,19 +811,21 @@
           },
           {
             "type": "extension",
-            "name": "llm",
+            "extension_group": "llm",
             "addon": "openai_chatgpt_python",
-            "extension_group": "chatgpt",
+            "name": "llm",
             "property": {
-              "api_key": "${env:OPENAI_API_KEY}",
-              "base_url": "${env:OPENAI_API_BASE}",
+              "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+              "api_key": "${env:QWEN_API_KEY}",
               "frequency_penalty": 0.9,
-              "greeting": "你好",
-              "max_memory_length": 10,
+              "model": "qwen-max",
               "max_tokens": 512,
-              "model": "${env:OPENAI_MODEL}",
               "prompt": "",
-              "proxy_url": "${env:OPENAI_PROXY_URL}"
+              "proxy_url": "${env:OPENAI_PROXY_URL}",
+              "greeting": "TEN Agent connected. How can I help you today?",
+              "checking_vision_text_items": "[\"Let me take a look...\",\"Let me check your camera...\",\"Please wait for a second...\"]",
+              "max_memory_length": 10,
+              "enable_tools": true
             }
           },
           {
@@ -893,6 +895,9 @@
                   },
                   {
                     "extension": "message_collector"
+                  },
+                  {
+                    "extension": "llm"
                   }
                 ]
               }
