@@ -47,7 +47,9 @@ class AsyncIteratorCallback(ResultCallback):
         if not data:
             self.ten_env.log_warn("Received empty audio bytes")
             return
-        self.ten_env.log_info(f"Received pcm data: {len(data)} bytes")
+        self.ten_env.log_info(
+            f"[TTS_TEST_POINT_RECEIVED] Received pcm data: {len(data)} bytes"
+        )
         if self.closed:
             self.ten_env.log_warn(
                 f"received data: {len(data)} bytes but connection was closed"

@@ -53,9 +53,11 @@ class BytedanceTTSExtension(AsyncTTSBaseExtension):
     async def on_request_tts(
         self, ten_env: AsyncTenEnv, input_text: str, end_of_segment: bool
     ) -> None:
-        ten_env.log_info(f"on_request_tts: {input_text}")
+        ten_env.log_info(f"[TTS_TEST_POINT_SEND] on_request_tts: {input_text}")
         async for audio_data in self.client.text_to_speech_stream(input_text):
-            ten_env.log_info(f"Received pcm data: {len(audio_data)} bytes")
+            ten_env.log_info(
+                f"[TTS_TEST_POINT_RECEIVED] Received pcm data: {len(audio_data)} bytes"
+            )
             await self.send_audio_out(ten_env, audio_data)
 
     async def on_cancel_tts(self, ten_env: AsyncTenEnv) -> None:

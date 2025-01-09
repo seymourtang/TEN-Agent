@@ -11,18 +11,15 @@
   ],
   "api": {
     "property": {
-      "app_id": {
+      "duration": {
         "type": "string"
       },
-      "secret_id": {
+      "loop_count": {
         "type": "string"
       },
-      "secret_key": {
-        "type": "string"
-      },
-      "engine_model_type":{
-        "type": "string"
-     }
+      "file_path":{
+        "type":"string"
+      }
     },
     "audio_frame_in": [
       {

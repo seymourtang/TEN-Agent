@@ -44,7 +44,7 @@ class AsyncIteratorCallback(FlowingSpeechSynthesisListener):
         if not audio_bytes:
             self.ten_env.log_warn("Received empty audio bytes")
             return
-        self.ten_env.log_info(f"Received pcm data: {len(audio_bytes)} bytes")
+        self.ten_env.log_info(f"[TTS_TEST_POINT_RECEIVED] Received pcm data: {len(audio_bytes)} bytes")
         if self.closed:
             self.ten_env.log_warn(
                 f"Received data: {len(audio_bytes)} bytes but connection was closed"

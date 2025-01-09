@@ -7,6 +7,7 @@ import traceback
 import asyncio
 import os
 from ten import AsyncExtension, AsyncTenEnv, Data, Cmd
+from .config import ToolConfig
 
 TEXT_FILE_PATH = "tts_test.txt"
 DATA_OUT_TEXT_DATA_PROPERTY_TEXT = "text"
@@ -19,8 +20,7 @@ class TTSTestToolExtension(AsyncExtension):
     def __init__(self, name: str) -> None:
         super().__init__(name)
         self.stream_id = 123
-        self.duration = 20
-        self.loop_count = 5
+        self.config = None
 
     async def on_init(self, ten_env: AsyncTenEnv) -> None:
         await super().on_init(ten_env)
@@ -29,34 +29,32 @@ class TTSTestToolExtension(AsyncExtension):
     async def on_start(self, ten_env: AsyncTenEnv) -> None:
         await super().on_start(ten_env)
         ten_env.log_info("on_start")
+        self.config = await ToolConfig.create_async(ten_env=ten_env)
+        ten_env.log_info(f"config: {self.config}")
         asyncio.create_task(self.process_tts_text(ten_env=ten_env))
 
     async def process_tts_text(self, ten_env: AsyncTenEnv) -> None:
-        # 读取当前目录的tts_test.txt文件，每行发送一次tts请求
-        current_directory = os.path.dirname(__file__)
-        ten_env.log_info(f"current file directory: {current_directory}")
-        file_path = os.path.join(current_directory, TEXT_FILE_PATH)
         ten_env.log_info("process_tts_text is ready")
         await asyncio.sleep(5)
         ten_env.log_info("process_tts_text is running")
 
-        if not os.path.exists(file_path):
-            ten_env.log_error(f"file not found: {file_path}")
+        if not os.path.exists(self.config.file_path):
+            ten_env.log_error(f"file not found: {self.config.file_path}")
             return
         content = ""
         try:
 
-            with open(file_path, "r", encoding="utf-8") as file:
+            with open(self.config.file_path, "r", encoding="utf-8") as file:
                 content = file.read()
         except Exception as e:
             ten_env.log_error(f"error reading text file: {e}")
             traceback.print_exc()
 
         # 循环5次发送tts请求，内容就是content
-        for i in range(self.loop_count):
+        for i in range(int(self.config.loop_count)):
             await self.send_text_data(ten_env, content)
             ten_env.log_info(f"send text data,i={i}")
-            await asyncio.sleep(self.duration)
+            await asyncio.sleep(int(self.config.duration))
 
     async def send_text_data(self, ten_env: AsyncTenEnv, text: str) -> None:
         data = Data.create("text_data")
