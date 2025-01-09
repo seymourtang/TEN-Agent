@@ -757,6 +757,210 @@
             ]
           }
         ]
+      },
+      {
+        "name": "tencent_tts_voice_assistant",
+        "auto_start": false,
+        "nodes": [
+          {
+            "type": "extension",
+            "extension_group": "default",
+            "addon": "agora_rtc",
+            "name": "agora_rtc",
+            "property": {
+              "app_id": "${env:AGORA_APP_ID}",
+              "token": "<agora_token>",
+              "channel": "ten_agent_test",
+              "stream_id": 1234,
+              "remote_stream_id": 123,
+              "subscribe_audio": true,
+              "publish_audio": true,
+              "publish_data": true,
+              "enable_agora_asr": false,
+              "agora_asr_vendor_name": "microsoft",
+              "agora_asr_language": "en-US",
+              "agora_asr_vendor_key": "${env:AZURE_STT_KEY}",
+              "agora_asr_vendor_region": "${env:AZURE_STT_REGION}",
+              "agora_asr_session_control_file_path": "session_control.conf"
+            }
+          },
+          {
+            "type": "extension",
+            "extension_group": "asr",
+            "addon": "tencent_asr_python",
+            "name": "tencent_asr",
+            "property": {
+              "app_id":"${env:TENCENT_ASR_APP_ID}",
+              "secret_id":"${env:TENCENT_ASR_SECRET_ID}",
+              "secret_key":"${env:TENCENT_ASR_SECRET_KEY}",
+              "engine_model_type":"16k_zh"
+            }
+          },
+          {
+            "type": "extension",
+            "extension_group": "tts",
+            "addon": "tencent_tts_python",
+            "name": "tts",
+            "property": {
+              "app_id":"${env:TENCENT_TTS_APP_ID}",
+              "secret_id":"${env:TENCENT_TTS_SECRET_ID}",
+              "secret_key":"${env:TENCENT_TTS_SECRET_KEY}",
+              "voice_type":"${env:TENCENT_TTS_VOICE_TYPE",
+              "sample_rate":"${env:TENCENT_TTS_SAMPLE_RATE}"
+            }
+          },
+          {
+            "type": "extension",
+            "name": "llm",
+            "addon": "openai_chatgpt_python",
+            "extension_group": "chatgpt",
+            "property": {
+              "api_key": "${env:OPENAI_API_KEY}",
+              "base_url": "${env:OPENAI_API_BASE}",
+              "frequency_penalty": 0.9,
+              "greeting": "你好",
+              "max_memory_length": 10,
+              "max_tokens": 512,
+              "model": "${env:OPENAI_MODEL}",
+              "prompt": "",
+              "proxy_url": "${env:OPENAI_PROXY_URL}"
+            }
+          },
+          {
+            "type": "extension",
+            "extension_group": "default",
+            "addon": "interrupt_detector_python",
+            "name": "interrupt_detector"
+          },
+          {
+            "type": "extension",
+            "extension_group": "transcriber",
+            "addon": "message_collector",
+            "name": "message_collector"
+          }
+        ],
+        "connections": [
+          {
+            "extension": "agora_rtc",
+            "audio_frame": [
+              {
+                "name": "pcm_frame",
+                "dest": [
+                  {
+                    "extension": "tencent_asr"
+                  }
+                ]
+              }
+            ],
+            "cmd": [
+              {
+                "name": "on_user_joined",
+                "dest": [
+                  {
+                    "extension": "llm"
+                  }
+                ]
+              },
+              {
+                "name": "on_user_left",
+                "dest": [
+                  {
+                    "extension": "llm"
+                  }
+                ]
+              },
+              {
+                "name": "on_connection_failure",
+                "dest": [
+                  {
+                    "extension": "llm"
+                  },
+                  {
+                    "extension": "tencent_asr"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "extension": "tencent_asr",
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension": "interrupt_detector"
+                  },
+                  {
+                    "extension": "message_collector"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "extension": "message_collector",
+            "data": [
+              {
+                "name": "data",
+                "dest": [
+                  {
+                    "extension": "agora_rtc"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "extension": "tts",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension": "agora_rtc"
+                  }
+                ]
+              }
+            ],
+            "audio_frame": [
+              {
+                "name": "pcm_frame",
+                "dest": [
+                  {
+                    "extension": "agora_rtc"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "extension": "llm",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension": "tts"
+                  }
+                ]
+              }
+            ],
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension": "tts"
+                  },
+                  {
+                    "extension": "message_collector"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     ],
     "log_level": 3

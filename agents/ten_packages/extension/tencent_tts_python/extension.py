@@ -20,12 +20,12 @@ class TencentTTSExtension(AsyncTTSBaseExtension):
 
     async def on_init(self, ten_env: AsyncTenEnv) -> None:
         await super().on_init(ten_env)
-        ten_env.log_debug("on_init")
+        ten_env.log_info("on_init")
 
     async def on_start(self, ten_env: AsyncTenEnv) -> None:
         try:
             await super().on_start(ten_env)
-            ten_env.log_debug("on_start")
+            ten_env.log_info("on_start")
 
             self.config = await TencentTTSConfig.create_async(ten_env=ten_env)
             ten_env.log_info(f"config: {self.config}")
@@ -40,16 +40,18 @@ class TencentTTSExtension(AsyncTTSBaseExtension):
                 raise ValueError("secre_key is required")
 
             self.client = TencentTTS(self.config)
-            self.client._create_synthesizer(ten_env=ten_env)
+            self.client.create_synthesizer(ten_env=ten_env)
             self.client.start(ten_env=ten_env)
         except Exception as e:
-            ten_env.log_error(f"on_start failed: {traceback.format_exc()}")
+            ten_env.log_error(
+                f"on_start failed,err:{e},traceback: {traceback.format_exc()}"
+            )
 
         asyncio.create_task(self._process_audio_data(ten_env))
 
     async def on_stop(self, ten_env: AsyncTenEnv) -> None:
         await super().on_stop(ten_env)
-        ten_env.log_debug("on_stop")
+        ten_env.log_info("on_stop")
 
     async def on_deinit(self, ten_env: AsyncTenEnv) -> None:
         await super().on_deinit(ten_env)

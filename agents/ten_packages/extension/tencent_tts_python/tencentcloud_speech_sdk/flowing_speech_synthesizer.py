@@ -9,8 +9,8 @@ import threading
 import websocket
 import uuid
 import urllib
-from common.log import logger
-from common.utils import is_python3
+from .common.log import logger
+from .common.utils import is_python3
 
 
 _PROTOCOL = "wss://"
@@ -20,8 +20,8 @@ _ACTION = "TextToStreamAudioWSv2"
 
 
 class FlowingSpeechSynthesisListener(object):
-    '''
-    '''
+    """ """
+
     def on_synthesis_start(self, session_id):
         logger.info("on_synthesis_start: session_id={}".format(session_id))
 
@@ -29,23 +29,30 @@ class FlowingSpeechSynthesisListener(object):
         logger.info("on_synthesis_end: -")
 
     def on_audio_result(self, audio_bytes):
-        logger.info("on_audio_result: recv audio bytes, len={}".format(len(audio_bytes)))
+        logger.info(
+            "on_audio_result: recv audio bytes, len={}".format(len(audio_bytes))
+        )
 
     def on_text_result(self, response):
         session_id = response["session_id"]
         request_id = response["request_id"]
         message_id = response["message_id"]
-        result = response['result']
+        result = response["result"]
         subtitles = []
         if "subtitles" in result and len(result["subtitles"]) > 0:
             subtitles = result["subtitles"]
-        logger.info("on_text_result: session_id={} request_id={} message_id={}\nsubtitles={}".format(
-            session_id, request_id, message_id, subtitles))
+        logger.info(
+            "on_text_result: session_id={} request_id={} message_id={}\nsubtitles={}".format(
+                session_id, request_id, message_id, subtitles
+            )
+        )
 
     def on_synthesis_fail(self, response):
-        logger.error("on_synthesis_fail: code={} msg={}".format(
-            response['code'], response['message']
-        ))
+        logger.error(
+            "on_synthesis_fail: code={} msg={}".format(
+                response["code"], response["message"]
+            )
+        )
 
 
 NOTOPEN = 0
@@ -109,41 +116,41 @@ class FlowingSpeechSynthesizer:
         sort_dict = sorted(params.keys())
         sign_str = "GET" + _HOST + _PATH + "?"
         for key in sort_dict:
-            sign_str = sign_str + key + "=" + str(params[key]) + '&'
+            sign_str = sign_str + key + "=" + str(params[key]) + "&"
         sign_str = sign_str[:-1]
         print(sign_str)
         if is_python3():
-            secret_key = self.credential.secret_key.encode('utf-8')
-            sign_str = sign_str.encode('utf-8')
+            secret_key = self.credential.secret_key.encode("utf-8")
+            sign_str = sign_str.encode("utf-8")
         else:
             secret_key = self.credential.secret_key
         hmacstr = hmac.new(secret_key, sign_str, hashlib.sha1).digest()
         s = base64.b64encode(hmacstr)
-        s = s.decode('utf-8')
+        s = s.decode("utf-8")
         return s
 
     def __gen_params(self, session_id):
         self.session_id = session_id
 
         params = dict()
-        params['Action'] = _ACTION
-        params['AppId'] = int(self.appid)
-        params['SecretId'] = self.credential.secret_id
-        params['ModelType'] = 1
-        params['VoiceType'] = self.voice_type
-        params['Codec'] = self.codec
-        params['SampleRate'] = self.sample_rate
-        params['Speed'] = self.speed
-        params['Volume'] = self.volume
-        params['SessionId'] = self.session_id
-        params['EnableSubtitle'] = self.enable_subtitle
+        params["Action"] = _ACTION
+        params["AppId"] = int(self.appid)
+        params["SecretId"] = self.credential.secret_id
+        params["ModelType"] = 1
+        params["VoiceType"] = self.voice_type
+        params["Codec"] = self.codec
+        params["SampleRate"] = self.sample_rate
+        params["Speed"] = self.speed
+        params["Volume"] = self.volume
+        params["SessionId"] = self.session_id
+        params["EnableSubtitle"] = self.enable_subtitle
         if self.emotion_category != "":
-            params['EmotionCategory']= self.emotion_category
-            params['EmotionIntensity']= self.emotion_intensity
+            params["EmotionCategory"] = self.emotion_category
+            params["EmotionIntensity"] = self.emotion_intensity
 
         timestamp = int(time.time())
-        params['Timestamp'] = timestamp
-        params['Expired'] = timestamp + 24 * 60 * 60
+        params["Timestamp"] = timestamp
+        params["Expired"] = timestamp + 24 * 60 * 60
         return params
 
     def __create_query_string(self, param):
@@ -166,11 +173,10 @@ class FlowingSpeechSynthesizer:
         return {
             "session_id": self.session_id,
             "message_id": str(uuid.uuid1()),
-
             "action": action,
             "data": data,
         }
-    
+
     def __do_send(self, action, text):
         WSRequestMessage = self.__new_ws_request_message(action, text)
         data = json.dumps(WSRequestMessage)
@@ -182,7 +188,7 @@ class FlowingSpeechSynthesizer:
         logger.info("process: action={} data={}".format(action, text))
         self.__do_send(action, text)
 
-    def complete(self, action = FlowingSpeechSynthesizer_ACTION_COMPLETE):
+    def complete(self, action=FlowingSpeechSynthesizer_ACTION_COMPLETE):
         logger.info("complete: action={}".format(action))
         self.__do_send(action, "")
 
@@ -203,36 +209,45 @@ class FlowingSpeechSynthesizer:
             ta = time.time()
             self.ws.close()
             tb = time.time()
-            logger.info("client has closed connection ({}), cost {} ms".format(reason, int((tb-ta)*1000)))
+            logger.info(
+                "client has closed connection ({}), cost {} ms".format(
+                    reason, int((tb - ta) * 1000)
+                )
+            )
 
         def _on_data(ws, data, opcode, flag):
             logger.debug("data={} opcode={} flag={}".format(data, opcode, flag))
             if opcode == websocket.ABNF.OPCODE_BINARY:
-                self.listener.on_audio_result(data) # <class 'bytes'>
+                self.listener.on_audio_result(data)  # <class 'bytes'>
                 pass
             elif opcode == websocket.ABNF.OPCODE_TEXT:
-                resp = json.loads(data) # WSResponseMessage
-                if resp['code'] != 0:
-                    logger.error("server synthesis fail request_id={} code={} msg={}".format(
-                        resp['request_id'], resp['code'], resp['message']
-                    ))
+                resp = json.loads(data)  # WSResponseMessage
+                if resp["code"] != 0:
+                    logger.error(
+                        "server synthesis fail request_id={} code={} msg={}".format(
+                            resp["request_id"], resp["code"], resp["message"]
+                        )
+                    )
                     self.listener.on_synthesis_fail(resp)
                     return
-                if "final" in resp and resp['final'] == 1:
+                if "final" in resp and resp["final"] == 1:
                     logger.info("recv FINAL frame")
                     self.status = FINAL
                     _close_conn("after recv final")
                     self.listener.on_synthesis_end()
                     return
-                if "ready" in resp and resp['ready'] == 1:
+                if "ready" in resp and resp["ready"] == 1:
                     logger.info("recv READY frame")
                     self.ready = True
                     return
-                if "heartbeat" in resp and resp['heartbeat'] == 1:
+                if "heartbeat" in resp and resp["heartbeat"] == 1:
                     logger.info("recv HEARTBEAT frame")
                     return
                 if "result" in resp:
-                    if "subtitles" in resp["result"] and resp["result"]["subtitles"] is not None:
+                    if (
+                        "subtitles" in resp["result"]
+                        and resp["result"]["subtitles"] is not None
+                    ):
                         self.listener.on_text_result(resp)
                     return
             else:
@@ -246,13 +261,17 @@ class FlowingSpeechSynthesizer:
             _close_conn("after recv error")
 
         def _on_close(ws, close_status_code, close_msg):
-            logger.info("conn closed, close_status_code={} close_msg={}".format(close_status_code, close_msg))
+            logger.info(
+                "conn closed, close_status_code={} close_msg={}".format(
+                    close_status_code, close_msg
+                )
+            )
             self.status = CLOSED
 
         def _on_open(ws):
             logger.info("conn opened")
             self.status = OPENED
-            
+
         session_id = str(uuid.uuid1())
         params = self.__gen_params(session_id)
         signature = self.__gen_signature(params)
@@ -265,9 +284,13 @@ class FlowingSpeechSynthesizer:
         requrl += "&Signature=%s" % autho
         print(requrl)
 
-        self.ws = websocket.WebSocketApp(requrl, None,# header=headers,
-            on_error=_on_error, on_close=_on_close,
-            on_data=_on_data)
+        self.ws = websocket.WebSocketApp(
+            requrl,
+            None,  # header=headers,
+            on_error=_on_error,
+            on_close=_on_close,
+            on_data=_on_data,
+        )
         self.ws.on_open = _on_open
 
         self.status = STARTED
@@ -275,7 +298,7 @@ class FlowingSpeechSynthesizer:
         self.wst.daemon = True
         self.wst.start()
         self.listener.on_synthesis_start(session_id)
-        
+
         logger.info("synthesizer start: end")
 
     def wait(self):

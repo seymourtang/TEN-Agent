@@ -166,8 +166,8 @@ class TencetASR:
             except asyncio.QueueEmpty:
                 break
 
-    def send_audio_data(self, frame_buf: bytes) -> None:
-        self.recognizer.write(frame_buf)
+    # def send_audio_data(self, frame_buf: bytes) -> None:
+    #     self.recognizer.write(frame_buf)
 
     def stop(self, ten_env: AsyncTenEnv) -> None:
         if self.recognizer:

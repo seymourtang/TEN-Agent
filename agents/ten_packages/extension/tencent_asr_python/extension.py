@@ -72,19 +72,7 @@ class TencentASRExtension(AsyncExtension):
             return
         buf = frame.get_buf()
         self.stream_id = frame.get_property_int("stream_id")
-
-        # if self.frame_buffer:
-        #     buf = bytes(self.frame_buffer) + buf
-        #     self.frame_buffer.clear()
-
-        # while len(buf) >= FRAME_SIZE:
-        #     await self.audio_frame_queue.put(buf[:FRAME_SIZE])
-        #     buf = buf[FRAME_SIZE:]
-
-        # if len(buf) > 0:
-        #     self.frame_buffer.extend(buf)
-        # await self.audio_frame_queue.put(buf)
-        self.client.send_audio_data(buf)
+        await self.audio_frame_queue.put(buf)
 
     async def on_stop(self, ten_env: AsyncTenEnv) -> None:
         ten_env.log_info("on_stop")
