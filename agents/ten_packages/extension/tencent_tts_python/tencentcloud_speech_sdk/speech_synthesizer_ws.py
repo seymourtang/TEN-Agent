@@ -9,7 +9,7 @@ import threading
 from websocket import ABNF, WebSocketApp
 import uuid
 import urllib
-from common.log import logger
+from .common.log import logger
 
 
 _PROTOCOL = "wss://"

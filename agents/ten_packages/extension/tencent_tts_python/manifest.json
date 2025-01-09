@@ -23,7 +23,7 @@
   "api": {
     "property": {
       "app_id": {
-        "type": "int64"
+        "type": "string"
       },
       "secret_id": {
         "type": "string"
@@ -34,11 +34,8 @@
       "voice_type":{
         "type":"string"
       },
-      "fast_voice_type":{
-        "type":"string"
-      },
       "sample_rate": {
-        "type": "int64"
+        "type": "string"
       }
     },
     "data_in": [
