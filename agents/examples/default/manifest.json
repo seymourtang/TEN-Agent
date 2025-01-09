@@ -107,6 +107,11 @@
       "type": "extension",
       "name": "tencent_tts_python",
       "version": "=0.1.0"
+    },
+    {
+      "type": "extension",
+      "name": "tts_test_tool_python",
+      "version": "=0.1.0"
     }
   ]
 }
