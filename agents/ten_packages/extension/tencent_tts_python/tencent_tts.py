@@ -41,13 +41,15 @@ class AsyncIteratorCallback(FlowingSpeechSynthesisListener):
         self.close()
 
     def on_audio_result(self, audio_bytes):
-        self.ten_env.log_info(f"On_audio_result: recv audio bytes, len={len(audio_bytes)}")
+        self.ten_env.log_info(
+            f"On_audio_result: recv audio bytes, len={len(audio_bytes)}"
+        )
         if self.closed:
             self.ten_env.log_warn(
                 f"Received data: {len(audio_bytes)} bytes but connection was closed"
             )
             return
-        self.ten_env.log_debug(f"Received data: {len(audio_bytes)} bytes")
+        self.ten_env.log_info(f"Received data: {len(audio_bytes)} bytes")
         asyncio.run_coroutine_threadsafe(self.queue.put(audio_bytes), self.loop)
 
     def on_synthesis_fail(self, response):
@@ -66,7 +68,7 @@ class TencentTTS:
         if self.synthesizer:
             self.synthesizer = None
 
-        ten_env.log_info("Creating new synthesizer")
+        ten_env.log_info(f"Creating new synthesizer,config:{self.config}")
         credential_var = credential.Credential(
             self.config.secret_id, self.config.secret_key
         )
@@ -85,6 +87,7 @@ class TencentTTS:
     def start(self, ten_env: AsyncTenEnv) -> None:
         if self.synthesizer:
             self.synthesizer.start()
+            ten_env.log_info("Synthesizer started")
         else:
             ten_env.log_warn("Synthesizer is not initialized")
 

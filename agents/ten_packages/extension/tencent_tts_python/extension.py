@@ -42,6 +42,7 @@ class TencentTTSExtension(AsyncTTSBaseExtension):
             self.client = TencentTTS(self.config)
             self.client.create_synthesizer(ten_env=ten_env)
             self.client.start(ten_env=ten_env)
+
         except Exception as e:
             ten_env.log_error(
                 f"on_start failed,err:{e},traceback: {traceback.format_exc()}"
