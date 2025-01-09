@@ -1,0 +1,51 @@
+{
+  "_ten": {
+    "predefined_graphs": [
+      {
+        "name": "tts_test_tool_cosy",
+        "auto_start": true,
+        "nodes": [
+          {
+            "type": "extension",
+            "extension_group": "tool",
+            "addon": "tts_test_tool_python",
+            "name": "tool",
+            "property": {
+              "duration":"${env:TOOL_DURATION}",
+              "loop_count":"${env:TOOL_LOOP_COUNT}",
+              "file_path":"${env:TOOL_FILE_PATH}"
+            }
+          },
+          {
+            "type": "extension",
+            "extension_group": "tts",
+            "addon": "cosy_tts_python",
+            "name": "tts",
+            "property": {
+              "api_key": "${env:QWEN_API_KEY}",
+              "model": "cosyvoice-v1",
+              "voice": "longxiaochun",
+              "sample_rate": 16000
+            }
+          }
+        ],
+        "connections": [
+          {
+            "extension": "tool",
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension": "tts"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }     
+    ],
+    "log_level": 3
+  }
+}
