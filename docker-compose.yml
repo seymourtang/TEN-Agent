@@ -1,3 +1,4 @@
+version: '2'
 services:
   ten_agent_dev_tts:
     image: ghcr.io/ten-framework/ten_agent_build:0.3.4
@@ -13,7 +14,7 @@ services:
     env_file:
       - .env
     networks:
-      - ten_agent_network
+      - ten_agent_tts_network
   ten_agent_playground:
     image: ghcr.io/ten-framework/ten_agent_playground:0.6.2-85-g6a234b5
     container_name: ten_agent_playground
@@ -21,7 +22,7 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - ten_agent_network
+      - ten_agent_tts_network
     environment:
       - AGENT_SERVER_URL=http://ten_agent_dev:8080
       - TEN_DEV_SERVER_URL=http://ten_agent_dev:49483
@@ -32,7 +33,7 @@ services:
     ports:
       - "3002:3000"
     networks:
-      - ten_agent_network
+      - ten_agent_tts_network
     environment:
       - AGENT_SERVER_URL=http://ten_agent_dev:8080
   # ten_graph_designer:
@@ -45,6 +46,7 @@ services:
   #     - ten_agent_network
   #   environment:
   #     - TEN_DEV_SERVER_URL=http://ten_agent_dev:49483
+
 networks:
-  ten_agent_network:
+  ten_agent_tts_network:
     driver: bridge
