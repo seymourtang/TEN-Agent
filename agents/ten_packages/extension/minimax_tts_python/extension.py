@@ -45,8 +45,10 @@ class MinimaxTTSExtension(AsyncTTSBaseExtension):
         self, ten_env: AsyncTenEnv, input_text: str, end_of_segment: bool
     ) -> None:
         try:
+            ten_env.log_info(f"on_request_tts: {input_text}")
             data = self.client.get(ten_env, input_text)
             async for frame in data:
+                ten_env.log_info(f"Received pcm data: {len(frame)} bytes")
                 await self.send_audio_out(
                     ten_env, frame, sample_rate=self.client.config.sample_rate
                 )
