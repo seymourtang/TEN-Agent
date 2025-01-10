@@ -4,6 +4,7 @@
 # See the LICENSE file for more information.
 #
 import asyncio
+import time
 from .cosy_tts import CosyTTS, CosyTTSConfig
 from ten import (
     AsyncTenEnv,
@@ -52,7 +53,7 @@ class CosyTTSExtension(AsyncTTSBaseExtension):
     async def on_request_tts(
         self, ten_env: AsyncTenEnv, input_text: str, end_of_segment: bool
     ) -> None:
-        ten_env.log_info(f"[TTS_TEST_POINT_SEND] on_request_tts: {input_text}")
+        ten_env.log_info(f"on_request_tts: {input_text},TTS_TEST_POINT_SEND:{int(time.time() * 1000)}")
         self.client.text_to_speech_stream(ten_env, input_text, end_of_segment)
 
     async def on_cancel_tts(self, ten_env: AsyncTenEnv) -> None:

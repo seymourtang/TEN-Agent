@@ -1,5 +1,6 @@
 import asyncio
 from dataclasses import dataclass
+import time
 
 from websocket import WebSocketConnectionClosedException
 
@@ -48,7 +49,7 @@ class AsyncIteratorCallback(ResultCallback):
             self.ten_env.log_warn("Received empty audio bytes")
             return
         self.ten_env.log_info(
-            f"[TTS_TEST_POINT_RECEIVED] Received pcm data: {len(data)} bytes"
+            f"Received pcm data: {len(data)} bytes,TTS_TEST_POINT_RECEIVED:{int(time.time() * 1000)}"
         )
         if self.closed:
             self.ten_env.log_warn(
