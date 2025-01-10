@@ -56,6 +56,14 @@ class TTSTestToolExtension(AsyncExtension):
             ten_env.log_info(f"send text data,i={i}")
             await asyncio.sleep(int(self.config.duration))
 
+        ten_env.log_info("process_tts_text is done")
+        await self.close_app(ten_env)
+
+    async def close_app(self, ten_env: AsyncTenEnv) -> None:
+        close_app_cmd = Cmd.create("ten:close_app")
+        close_app_cmd.set_dest("localhost", None, None, None)
+        await ten_env.send_cmd(close_app_cmd)
+
     async def send_text_data(self, ten_env: AsyncTenEnv, text: str) -> None:
         data = Data.create("text_data")
 
