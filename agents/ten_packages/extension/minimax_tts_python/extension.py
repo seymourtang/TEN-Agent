@@ -47,7 +47,7 @@ class MinimaxTTSExtension(AsyncTTSBaseExtension):
     ) -> None:
         try:
             ten_env.log_info(
-                f"on_request_tts: {input_text},TTS_TEST_POINT_SEND:{int(time.time() * 1000)}"
+                rf"on_request_tts: {input_text},TTS_TEST_POINT_SEND:{int(time.time() * 1000)}"
             )
             data = self.client.get(ten_env, input_text)
             async for frame in data:

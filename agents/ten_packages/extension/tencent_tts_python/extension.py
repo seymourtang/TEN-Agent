@@ -72,7 +72,7 @@ class TencentTTSExtension(AsyncTTSBaseExtension):
         self, ten_env: AsyncTenEnv, input_text: str, end_of_segment: bool
     ) -> None:
         ten_env.log_info(
-            f"on_request_tts: {input_text},TTS_TEST_POINT_SEND:{int(time.time() * 1000)}"
+            rf"on_request_tts: {input_text},TTS_TEST_POINT_SEND:{int(time.time() * 1000)}"
         )
         self.client.text_to_speech_stream(ten_env, input_text, end_of_segment)
 
