@@ -191,7 +191,7 @@ func (e *fishAudioTTSExtension) OnStart(ten ten.TenEnv) {
 					continue
 				}
 
-				ten.LogInfo(fmt.Sprintf("Received pcm data,TTS_TEST_POINT_RECEIVED:%d", time.Now().UnixMicro()))
+				ten.LogInfo(fmt.Sprintf("Received pcm data,TTS_TEST_POINT_RECEIVED:%d", time.Now().UnixMilli()))
 
 				pcm.send(ten, buf)
 				// clear buf
@@ -243,7 +243,7 @@ func (e *fishAudioTTSExtension) OnCmd(
 
 	switch cmdName {
 	case cmdInFlush:
-		outdateTs.Store(time.Now().UnixMicro())
+		outdateTs.Store(time.Now().UnixMilli())
 
 		// send out
 		outCmd, err := ten.NewCmd(cmdOutFlush)
