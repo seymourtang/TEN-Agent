@@ -288,7 +288,7 @@ func (e *fishAudioTTSExtension) OnData(
 		return
 	}
 
-	tenEnv.LogInfo(fmt.Sprintf("TTS_TEST_POINT_SEND:%d", time.Now().UnixMicro()))
+	tenEnv.LogInfo(fmt.Sprintf("TTS_TEST_POINT_SEND:%d", time.Now().UnixMilli()))
 	tenEnv.LogInfo(fmt.Sprintf("OnData input text: [%s]", text))
 
 	go func() {
