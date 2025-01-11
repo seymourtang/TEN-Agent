@@ -49,7 +49,7 @@ class CartesiaTTSExtension(AsyncTTSBaseExtension):
     ) -> None:
         ten_env.log_info(rf"on_request_tts: {input_text}")
         ten_env.log_info(f"TTS_TEST_POINT_SEND:{int(time.time() * 1000)}")
-        audio_stream = self.client.text_to_speech_stream(input_text)
+        audio_stream = await self.client.text_to_speech_stream(input_text)
 
         async for audio_data in audio_stream:
             self.ten_env.log_info(
