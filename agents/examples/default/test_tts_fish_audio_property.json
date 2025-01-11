@@ -1,0 +1,51 @@
+{
+  "_ten": {
+    "predefined_graphs": [
+      {
+        "name": "tts_test_tool_tencent",
+        "auto_start": true,
+        "nodes": [
+          {
+            "type": "extension",
+            "extension_group": "tool",
+            "addon": "tts_test_tool_python",
+            "name": "tool",
+            "property": {
+              "duration":"${env:TOOL_DURATION}",
+              "loop_count":"${env:TOOL_LOOP_COUNT}"
+            }
+          },
+          {
+            "type": "extension",
+            "name": "tts",
+            "addon": "fish_audio_tts",
+            "extension_group": "tts",
+            "property": {
+              "api_key": "${env:FISH_AUDIO_TTS_KEY}",
+              "base_url": "https://api.fish.audio",
+              "model_id": "d8639b5cc95548f5afbcfe22d3ba5ce5",
+              "optimize_streaming_latency": true,
+              "request_timeout_seconds": 30
+            }
+          }
+        ],
+        "connections": [
+          {
+            "extension": "tool",
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension": "tts"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "log_level": 3
+  }
+}

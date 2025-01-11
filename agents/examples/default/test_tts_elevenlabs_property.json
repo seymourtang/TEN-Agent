@@ -1,0 +1,54 @@
+{
+  "_ten": {
+    "predefined_graphs": [
+      {
+        "name": "tts_test_tool_tencent",
+        "auto_start": true,
+        "nodes": [
+          {
+            "type": "extension",
+            "extension_group": "tool",
+            "addon": "tts_test_tool_python",
+            "name": "tool",
+            "property": {
+              "duration":"${env:TOOL_DURATION}",
+              "loop_count":"${env:TOOL_LOOP_COUNT}"
+            }
+          },
+          {
+            "type": "extension",
+            "extension_group": "tts",
+            "addon": "elevenlabs_tts_python",
+            "name": "tts",
+            "property": {
+              "api_key": "${env:ELEVENLABS_TTS_KEY}",
+              "model_id": "eleven_multilingual_v2",
+              "optimize_streaming_latency": 0,
+              "request_timeout_seconds": 30,
+              "similarity_boost": 0.75,
+              "speaker_boost": false,
+              "stability": 0.5,
+              "voice_id": "pNInz6obpgDQGcFmaJgB"
+            }
+          }
+        ],
+        "connections": [
+          {
+            "extension": "tool",
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension": "tts"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "log_level": 3
+  }
+}

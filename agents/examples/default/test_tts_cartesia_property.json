@@ -1,0 +1,51 @@
+{
+  "_ten": {
+    "predefined_graphs": [
+      {
+        "name": "tts_test_tool_tencent",
+        "auto_start": true,
+        "nodes": [
+          {
+            "type": "extension",
+            "extension_group": "tool",
+            "addon": "tts_test_tool_python",
+            "name": "tool",
+            "property": {
+              "duration":"${env:TOOL_DURATION}",
+              "loop_count":"${env:TOOL_LOOP_COUNT}"
+            }
+          },
+          {
+            "type": "extension",
+            "extension_group": "tts",
+            "addon": "cartesia_tts",
+            "name": "tts",
+            "property": {
+              "api_key": "${env:CARTESIA_API_KEY}",
+              "language": "en",
+              "model_id": "sonic-english",
+              "sample_rate": 16000,
+              "voice_id": "f9836c6e-a0bd-460e-9d3c-f7299fa60f94"
+            }
+          }
+        ],
+        "connections": [
+          {
+            "extension": "tool",
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension": "tts"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "log_level": 3
+  }
+}
