@@ -32,7 +32,6 @@ class Addon(AsyncTTSBaseExtension):
         self.client = PlayhtTTS(self.config)
         self.client.create_synthesizer(ten_env)
 
-        asyncio.create_task(self.mock_on_request_text(ten_env))
         asyncio.create_task(self._process_audio_data(ten_env))
 
     async def on_stop(self, ten_env: AsyncTenEnv) -> None:
