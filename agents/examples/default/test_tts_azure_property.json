@@ -1,0 +1,49 @@
+{
+  "_ten": {
+    "predefined_graphs": [
+      {
+        "name": "tts_test_tool_tencent",
+        "auto_start": true,
+        "nodes": [
+          {
+            "type": "extension",
+            "extension_group": "tool",
+            "addon": "tts_test_tool_python",
+            "name": "tool",
+            "property": {
+              "duration":"${env:TOOL_DURATION}",
+              "loop_count":"${env:TOOL_LOOP_COUNT}"
+            }
+          },
+          {
+            "type": "extension",
+            "name": "tts",
+            "addon": "azure_tts",
+            "extension_group": "tts",
+            "property": {
+              "azure_subscription_key": "${env:AZURE_TTS_KEY}",
+              "azure_subscription_region": "${env:AZURE_TTS_REGION}",
+              "azure_synthesis_voice_name": "en-US-AndrewMultilingualNeural"
+            }
+          },
+        ],
+        "connections": [
+          {
+            "extension": "tool",
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension": "tts"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "log_level": 3
+  }
+}
