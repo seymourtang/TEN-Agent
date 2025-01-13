@@ -44,6 +44,11 @@
       "version": "=0.1.0"
     },
     {
+      "type": "extension",
+      "name": "playht_tts",
+      "version": "=0.1.0"
+    },
+    {
       "type": "system",
       "name": "azure_speech_sdk",
       "version": "1.38.0"
