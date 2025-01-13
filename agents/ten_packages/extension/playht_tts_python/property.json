@@ -1,6 +1,5 @@
 {
-    "api_key": "${env:QWEN_API_KEY}",
-    "model": "cosyvoice-v1",
-    "voice": "longxiaochun",
-    "sample_rate": 16000
+    "api_key": "${env:PLAYHT_API_KEY}",
+    "user_id": "${env:PLAYHT_USER_ID}",
+    "voice": "s3://voice-cloning-zero-shot/775ae416-49bb-4fb6-bd45-740f205d20a1/jennifersaad/manifest.json"
 }

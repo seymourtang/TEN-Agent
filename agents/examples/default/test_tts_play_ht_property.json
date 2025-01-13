@@ -1,0 +1,49 @@
+{
+  "_ten": {
+    "predefined_graphs": [
+      {
+        "name": "tts_test_tool_tencent",
+        "auto_start": true,
+        "nodes": [
+          {
+            "type": "extension",
+            "extension_group": "tool",
+            "addon": "tts_test_tool_python",
+            "name": "tool",
+            "property": {
+              "duration":"${env:TOOL_DURATION}",
+              "loop_count":"${env:TOOL_LOOP_COUNT}"
+            }
+          },
+          {
+            "type": "extension",
+            "extension_group": "tts",
+            "addon": "playht_tts_python",
+            "name": "tts",
+            "property": {
+              "api_key": "${env:PLAYHT_API_KEY}",
+              "user_id": "${env:PLAYHT_USER_ID}",
+              "voice": "s3://voice-cloning-zero-shot/775ae416-49bb-4fb6-bd45-740f205d20a1/jennifersaad/manifest.json"
+            }
+          }
+        ],
+        "connections": [
+          {
+            "extension": "tool",
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension": "tts"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "log_level": 3
+  }
+}

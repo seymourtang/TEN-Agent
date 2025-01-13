@@ -28,11 +28,8 @@
       "voice": {
         "type": "string"
       },
-      "model": {
+      "user_id": {
         "type": "string"
-      },
-      "sample_rate": {
-        "type": "int64"
       }
     },
     "data_in": [
