@@ -12,59 +12,16 @@ from dashscope.audio.tts_v2 import SpeechSynthesizer, AudioFormat, ResultCallbac
 
 @dataclass
 class PlayhtTTSConfig(BaseConfig):
+    user_id: str = ""
     api_key: str = ""
-    voice: str = "longxiaochun"
-    model: str = "cosyvoice-v1"
+    voice: str = ""
     sample_rate: int = 16000
-
-
-class AsyncIteratorCallback(ResultCallback):
-    def __init__(self, ten_env: AsyncTenEnv, queue: asyncio.Queue) -> None:
-        self.closed = False
-        self.ten_env = ten_env
-        self.loop = asyncio.get_event_loop()
-        self.queue = queue
-
-    def close(self):
-        self.closed = True
-
-    def on_open(self):
-        self.ten_env.log_info("websocket is open.")
-
-    def on_complete(self):
-        self.ten_env.log_info("speech synthesis task complete successfully.")
-
-    def on_error(self, message: str):
-        self.ten_env.log_error(f"speech synthesis task failed, {message}")
-
-    def on_close(self):
-        self.ten_env.log_info("websocket is closed.")
-        self.close()
-
-    def on_event(self, message: str) -> None:
-        self.ten_env.log_debug(f"received event: {message}")
-
-    def on_data(self, data: bytes) -> None:
-        if not data:
-            self.ten_env.log_warn("Received empty audio bytes")
-            return
-        self.ten_env.log_info(
-            f"Received pcm data: {len(data)} bytes,TTS_TEST_POINT_RECEIVED:{int(time.time() * 1000)}"
-        )
-        if self.closed:
-            self.ten_env.log_warn(
-                f"received data: {len(data)} bytes but connection was closed"
-            )
-            return
-        asyncio.run_coroutine_threadsafe(self.queue.put(data), self.loop)
-
 
 class PlayhtTTS:
     def __init__(self, config: PlayhtTTSConfig) -> None:
         self.config = config
         self.synthesizer = None  # Initially no synthesizer
         self.queue = asyncio.Queue()
-        dashscope.api_key = config.api_key
 
     def _create_synthesizer(
         self, ten_env: AsyncTenEnv, callback: AsyncIteratorCallback
