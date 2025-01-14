@@ -7,7 +7,9 @@
 #
 
 from dataclasses import dataclass
-from typing import AsyncIterator
+from typing import AsyncIterator, Iterator
+
+from elevenlabs import AsyncElevenLabs, ElevenLabs, Voice, VoiceSettings
 from ten_ai_base.config import BaseConfig
 
 
@@ -31,8 +33,6 @@ class ElevenLabsTTS:
 
     def text_to_speech_stream(self, text: str) -> AsyncIterator[bytes]:
         # to avoid circular import issue when using openai with 11labs
-        from elevenlabs.client import AsyncElevenLabs
-        from elevenlabs import Voice, VoiceSettings
 
         if not self.client:
             self.client = AsyncElevenLabs(
@@ -53,5 +53,26 @@ class ElevenLabsTTS:
                     style=self.config.style,
                     speaker_boost=self.config.speaker_boost,
                 ),
+            ),
+        )
+
+    def text_to_speech_realtime(self, text: str) -> Iterator[bytes]:
+        if not self.client:
+            # self.client = AsyncElevenLabs(
+            #     api_key=self.config.api_key, timeout=self.config.request_timeout_seconds
+            # )
+            self.client = ElevenLabs(
+                api_key=self.config.api_key, timeout=self.config.request_timeout_seconds
+            )
+        return self.client.text_to_speech.convert_realtime(
+            voice_id=self.config.voice_id,
+            text=text,
+            model_id=self.config.model_id,
+            output_format="pcm_16000",
+            voice_settings=VoiceSettings(
+                stability=self.config.stability,
+                similarity_boost=self.config.similarity_boost,
+                style=self.config.style,
+                use_speaker_boost=self.config.speaker_boost,
             ),
         )

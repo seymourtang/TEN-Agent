@@ -47,9 +47,9 @@ class ElevenLabsTTSExtension(AsyncTTSBaseExtension):
         self, ten_env: AsyncTenEnv, input_text: str, end_of_segment: bool
     ) -> None:
         ten_env.log_info(rf"TTS_TEST_POINT_SEND:{int(time.time() * 1000)}")
-        audio_stream =await self.client.text_to_speech_stream(input_text)
+        audio_stream = self.client.text_to_speech_realtime(input_text)
         ten_env.log_info(f"on_request_tts: {input_text}")
-        async for audio_data in audio_stream:
+        for audio_data in audio_stream:
             ten_env.log_info(
                 f"Received pcm data: {len(audio_data)} bytes,TTS_TEST_POINT_RECEIVED:{int(time.time() * 1000)}"
             )
